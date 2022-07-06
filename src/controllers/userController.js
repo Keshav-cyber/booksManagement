@@ -94,9 +94,10 @@ const loginUser = async function (req, res) {
         let token = jwt.sign(
             {
                 userId: user._id.toString(),
-                exp: 86400      //24hr validation
+               
             },
-            "book-management-project"
+            "book-management-project",
+            { expiresIn: "10s"  }
         );
         res.setHeader("x-api-key", token);
         res.status(200).send({ status: true, data: { token: token } });

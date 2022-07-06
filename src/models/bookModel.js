@@ -22,10 +22,7 @@ const bookSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    bookImage:{
-        type:String,
-        required:true
-    },
+
     category: {
         type: String,
         required: true,
@@ -44,7 +41,7 @@ const bookSchema = new mongoose.Schema({
     },
     deletedAt: Date,
     releasedAt: {
-        type:Date,
+        type:String,
         required:true
     },
 

@@ -36,6 +36,11 @@ const isValidPassword = function(password){
     return passRegex.test(password)
 }
 
+const isValidDate= function(date){
+    const dateRegex = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/
+    return dateRegex.test(date)
+}
+ 
 
 
-module.exports = {isValid,isValidTitle,isValidName,isValidMobile,isValidEmail,isValidPassword}
+module.exports = {isValid,isValidTitle,isValidName,isValidMobile,isValidEmail,isValidPassword,isValidDate}
