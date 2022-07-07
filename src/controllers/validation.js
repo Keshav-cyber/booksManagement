@@ -2,8 +2,8 @@
 
 //Value Validation
 const isValid = function(value){
-    if(typeof value ==='undefined' || value ===null)  return false
-    if(typeof value ==='string' && value.trim().length ===0)return false
+    if(typeof value ==='undefined' || value ===null )  return false
+    if(typeof value != 'string' || value.trim().length ===0)return false
     return true
 }
 
@@ -32,7 +32,7 @@ const isValidEmail = function(email){
 
 //Password Validation
 const isValidPassword = function(password){
-    const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,15}$/
+    const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/
     return passRegex.test(password)
 }
 

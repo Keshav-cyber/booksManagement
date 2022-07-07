@@ -54,13 +54,7 @@ const authorise = async function (req, res, next) {
                 message: "user loggedin is not authorised to create for another user"
               })
               next()
-           
-
         }
-
-          
-
-
 
     } catch (error) {
         res.status(500).send({ msg: error.message })

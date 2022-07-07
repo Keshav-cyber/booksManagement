@@ -23,9 +23,11 @@ const registerUser = async function (req, res) {
         if (!isValidName(name)) {
             return res.status(400).send({ status: false, message: "enter valid name" })
         }
+        
         if (!isValid(phone)) {
             return res.status(400).send({ status: false, message: "phone number is required" })
         }
+        
         if (!isValidMobile(phone)) {
             return res.status(400).send({ status: false, message: "enter valid phone number" })
         }
@@ -97,7 +99,7 @@ const loginUser = async function (req, res) {
                
             },
             "book-management-project",
-            { expiresIn: "10s"  }
+            { expiresIn: "10h"  }
         );
         res.setHeader("x-api-key", token);
         res.status(200).send({ status: true, data: { token: token } });

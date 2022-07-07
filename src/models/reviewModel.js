@@ -19,7 +19,7 @@ const reviewSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    rating: {
+    rating: {                               //review, rating, reviewer's name
         type: Number,
         minlength: 1,
         maxlength: 5,
@@ -32,7 +32,7 @@ const reviewSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-},{timeStamps: true})
+},{timestamps: true})
 
 
 module.exports =  mongoose.model("Review",reviewSchema)
