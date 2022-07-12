@@ -121,7 +121,7 @@ const getBookByParam = async function (req, res) {
 const getFilterdBooks = async function (req, res) {
     try {
 
-        let allBooks = await bookModel.find({ $and: [req.query, { isDeleted: false }] }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1 })  // add review
+        let allBooks = await bookModel.find({ $and: [req.query, { isDeleted: false }] }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1 }).sort({title:1})  // add review
 
         if (allBooks.length < 1) return res.status(404).send({
             status: false,

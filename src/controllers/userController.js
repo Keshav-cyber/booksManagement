@@ -103,7 +103,7 @@ const loginUser = async function (req, res) {
                
             },
             "book-management-project",
-            { expiresIn: "1m" }
+            { expiresIn: "24h" }
         );
         res.setHeader("x-api-key", token);
         res.status(200).send({ status: true, data: { token: token } });
