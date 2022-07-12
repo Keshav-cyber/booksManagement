@@ -134,7 +134,7 @@ const getFilterdBooks = async function (req, res) {
             data: allBooks
         })
 
-    } catch (err) {
+    } catch (error) {
         res.status(500).send({ msg: error.message })
     }
 }

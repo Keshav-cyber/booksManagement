@@ -10,10 +10,12 @@ const authenticate = function (req, res, next) {
         let token = req.headers["X-Api-Key"]
         if (!token) token = req.headers["x-api-key"]
         if (!token) return res.status(400).send({ status: false, msg: "token must be present" })
-        let decodedToken = jwt.verify(token, 'book-management-project')
-        if (!decodedToken) return res.status(400).send({ status: false, msg: "token is not valid" })
-        req.userLogedIn = decodedToken.userId
-        next()
+        let decodedToken = jwt.verify(token, 'book-management-project',function(err,decodedToken) {
+           if(err) return res.status(400).send({ status: false, msg: "token is not valid or expired" })
+           req.userLogedIn = decodedToken.userId
+           next()
+        })
+        
       } catch (err) {
        return res.status(500).send({ status: false, Error: err.message })
       }
@@ -55,7 +57,9 @@ const authorise = async function (req, res, next) {
               })
               next()
         }
-        
+        if( !fromBodyuserId && !fromParamBookId){
+          next()
+        }
          
 
     } catch (error) {

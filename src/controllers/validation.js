@@ -15,7 +15,7 @@ const isValidTitle =function(title){
 
 //Name Validation
 const isValidName =function(name){
-    const  nameRegex =/^[a-zA-Z ]{2,30}$/
+    const  nameRegex =/^[a-zA-Z ]{2,30}$/         ///^[a-zA-Z0-9@$!%*#?&]{8,15}$/
     return nameRegex.test(name)
 }
 
@@ -32,7 +32,8 @@ const isValidEmail = function(email){
 
 //Password Validation
 const isValidPassword = function(password){
-    const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/
+    const passRegex = /^[a-zA-Z0-9@$!%*#?&]{8,15}$/
+    ///^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/
     return passRegex.test(password)
 }
 

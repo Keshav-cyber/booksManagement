@@ -6,7 +6,7 @@ const { isValid, isValidTitle, isValidName, isValidMobile, isValidEmail, isValid
 const registerUser = async function (req, res) {
 
     try {
-        let { title, name, phone, email, password } = req.body
+        let { title, name, phone, email, password ,address} = req.body
         if (Object.keys(req.body).length < 1) return res.status(400).send({
             status: false,
             message: "Insert data "
@@ -15,7 +15,7 @@ const registerUser = async function (req, res) {
             return res.status(400).send({ status: false, message: " title is required" })
         }
         if (!isValidTitle(title)) {
-            return res.status(400).send({ status: false, message: "enter valid title" })
+            return res.status(400).send({ status: false, message: "enter valid title from this[Mr,Mrs,Miss]" })
         }
         if (!isValid(name)) {
             return res.status(400).send({ status: false, message: "name is required" })
@@ -53,7 +53,11 @@ const registerUser = async function (req, res) {
         if (!isValidPassword(password)) {
             return res.status(400).send({ status: false, message: "password length is between 8 to 15" })
         }
-
+        if(address){
+            if(!(typeof address == 'object') || !(Object.keys(address).length>0)){
+                return res.status(400).send({ status: false, message: "insert address or send in object"})
+            }
+        }
         let createdUser = await userModel.create(req.body)
 
         res.status(201).send({
@@ -61,7 +65,7 @@ const registerUser = async function (req, res) {
             message: 'Success',
             data: createdUser
         })
-    } catch (err) {
+    } catch (error) {
         res.status(500).send({ msg: error.message })
     }
 
@@ -99,7 +103,7 @@ const loginUser = async function (req, res) {
                
             },
             "book-management-project",
-            { expiresIn: "10h"  }
+            { expiresIn: "1m" }
         );
         res.setHeader("x-api-key", token);
         res.status(200).send({ status: true, data: { token: token } });
