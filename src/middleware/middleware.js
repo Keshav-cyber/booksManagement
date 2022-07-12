@@ -9,7 +9,7 @@ const authenticate = function (req, res, next) {
     try {
         let token = req.headers["X-Api-Key"]
         if (!token) token = req.headers["x-api-key"]
-        if (!token) return res.status(404).send({ status: false, msg: "token must be present" })
+        if (!token) return res.status(400).send({ status: false, msg: "token must be present" })
         let decodedToken = jwt.verify(token, 'book-management-project')
         if (!decodedToken) return res.status(400).send({ status: false, msg: "token is not valid" })
         req.userLogedIn = decodedToken.userId
@@ -55,6 +55,8 @@ const authorise = async function (req, res, next) {
               })
               next()
         }
+        
+         
 
     } catch (error) {
         res.status(500).send({ msg: error.message })

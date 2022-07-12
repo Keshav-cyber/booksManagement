@@ -10,7 +10,7 @@ router.post("/login",userController.loginUser)
 
 
 router.post("/books",authenticate,authorise,bookController.createBook)
-router.get("/books",bookController.getFilterdBooks)
+router.get("/books",authenticate,bookController.getFilterdBooks)
 router.get("/books/:bookId",authenticate,bookController.getBookByParam)
 router.put("/books/:bookId",authenticate,authorise,bookController.updateBook)
 router.delete("/books/:bookId",authenticate,authorise,bookController.deleteBook)

@@ -41,6 +41,14 @@ const isValidDate= function(date){
     return dateRegex.test(date)
 }
  
+const isValidISBN = function(isbn){
+    const isbnRegex = /^(?:ISBN(?:-1[03])?:?\ )?(?=[0-9X]{10}$|(?=(?:[0-9]+[-\ ]){3})[-\ 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-\ ]){4})[-\ 0-9]{17}$)(?:97[89][-\ ]?)?[0-9]{1,5}[-\ ]?[0-9]+[-\ ]?[0-9]+[-\ ]?[0-9X]$/        
+    return isbnRegex.test(isbn)
+}
+const isValidTitleName = function(title){
+    const titleRegex = /^[A-Za-z0-9 ]{2,}$/         
+    return titleRegex.test(title)
+}
 
 
-module.exports = {isValid,isValidTitle,isValidName,isValidMobile,isValidEmail,isValidPassword,isValidDate}
+module.exports = { isValid,isValidTitle,isValidName,isValidMobile,isValidEmail,isValidPassword,isValidDate,isValidISBN ,isValidTitleName}
