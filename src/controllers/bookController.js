@@ -1,11 +1,11 @@
-const mongoose  = require('mongoose')
+const mongoose = require('mongoose')
 const bookModel = require('../models/bookModel')
 const reviewModel = require('../models/reviewModel')
 const userModel = require('../models/userModel')
 
-const { isValid, isValidDate, isValidName,isValidISBN,isValidTitleName } = require('./validation')
+const { isValid, isValidDate, isValidName, isValidISBN, isValidTitleName } = require('./validation')
 
-
+//===================================================Create Book Api =================================================
 
 const createBook = async function (req, res) {
     try {
@@ -18,7 +18,7 @@ const createBook = async function (req, res) {
         if (!isValid(title)) {
             return res.status(400).send({ status: false, message: " title is required" })
         }
-        if(!isValidTitleName(title)){
+        if (!isValidTitleName(title)) {
             return res.status(400).send({ status: false, message: " title is not valid min length 2" })
         }
         const isAvailable = await bookModel.find({ title: title })
@@ -47,25 +47,25 @@ const createBook = async function (req, res) {
         if (!isValid(ISBN)) {
             return res.status(400).send({ status: false, message: "ISBN is required" })
         }
-        if(!isValidISBN(ISBN)){
+        if (!isValidISBN(ISBN)) {
             return res.status(400).send({ status: false, message: "ISBN is not valid ISBN" })
         }
         const uniqueISBN = await bookModel.find({ ISBN: ISBN })
         if (uniqueISBN.length > 0) { return res.status(400).send({ status: false, message: "ISBN already available, use different one" }) }
 
-        
+
 
         if (!isValid(category)) {
             return res.status(400).send({ status: false, message: "Category is required" })
         }
-        if(!isValidName(category)){
+        if (!isValidName(category)) {
             return res.status(400).send({ status: false, message: "enter valid Category " })
         }
-        if (typeof(subcategory)!='object' || subcategory.length<1) {
+        if (typeof (subcategory) != 'object' || subcategory.length < 1) {
             return res.status(400).send({ status: false, message: "SubCategory is required" })
         }
-        for(let item of subcategory){
-            if(!isValid(item)) {return res.status(400).send({msg:"not valid SubCategory items"})}
+        for (let item of subcategory) {
+            if (!isValid(item)) { return res.status(400).send({ msg: "not valid SubCategory items" }) }
         }
         if (!isValid(releasedAt)) {
             return res.status(400).send({ status: false, message: "Released is required" })
@@ -83,11 +83,11 @@ const createBook = async function (req, res) {
 
     }
     catch (error) {
-       return res.status(500).send({ msg: error.message })
+        return res.status(500).send({ msg: error.message })
     }
 }
 
-
+//===================================================get Book Api =================================================
 
 
 const getBookByParam = async function (req, res) {
@@ -100,11 +100,11 @@ const getBookByParam = async function (req, res) {
         }
 
         const book = await bookModel.findOne({ _id: id, isDeleted: false })
-        
+
         if (!book) {
             return res.status(404).send({ status: false, message: "No book with this ID exist" })
         }
-        let reviews = await reviewModel.find({bookId:id,isDeleted:false}).select({bookId:1,reviewedBy:1,reviewedAt:1,rating:1,review:1})
+        let reviews = await reviewModel.find({ bookId: id, isDeleted: false }).select({ bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 })
 
         book._doc.reviewsData = reviews
         return res.status(200).send({ status: true, message: "Book list", data: book })
@@ -115,13 +115,13 @@ const getBookByParam = async function (req, res) {
 }
 
 
-
+//===============================================get filterd Books Api =================================================
 
 
 const getFilterdBooks = async function (req, res) {
     try {
 
-        let allBooks = await bookModel.find({ $and: [req.query, { isDeleted: false }] }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1 }).sort({title:1})  // add review
+        let allBooks = await bookModel.find({ $and: [req.query, { isDeleted: false }] }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1 }).sort({ title: 1 })  // add review
 
         if (allBooks.length < 1) return res.status(404).send({
             status: false,
@@ -139,7 +139,7 @@ const getFilterdBooks = async function (req, res) {
     }
 }
 
-
+//===================================================Update Book Api =================================================
 
 const updateBook = async function (req, res) {
     try {
@@ -159,7 +159,7 @@ const updateBook = async function (req, res) {
             status: false,
             message: "title is already in use , give another title"
         })
-        if(!isValidISBN(ISBN)){
+        if (!isValidISBN(ISBN)) {
             return res.status(400).send({ status: false, message: "enter valid isbn length 10  or 13" })
         }
         let checkIsbn = await bookModel.findOne({ ISBN: ISBN, isDeleted: false })
@@ -167,12 +167,12 @@ const updateBook = async function (req, res) {
             status: false,
             message: "isbn is already in use , give another isbn"
         })
-        if(excerpt){
-            if(!isValidName(excerpt)){
+        if (excerpt) {
+            if (!isValidName(excerpt)) {
                 return res.status(400).send({ status: false, message: "enter valid excerpt" })
             }
         }
-        if(releasedAt){
+        if (releasedAt) {
             if (!isValidDate(releasedAt)) return res.status(400).send({
                 status: false,
                 message: "enter valid date"
@@ -194,7 +194,7 @@ const updateBook = async function (req, res) {
     }
 }
 
-
+//===================================================Delete Book Api =================================================
 
 
 const deleteBook = async function (req, res) {
@@ -209,7 +209,7 @@ const deleteBook = async function (req, res) {
 
         if (!deleteData) { return res.status(404).send({ status: false, msg: "No book exist with this id" }) }
         return res.status(200).send({ status: true, data: deleteData })
-        
+
     }
 
     catch (error) {

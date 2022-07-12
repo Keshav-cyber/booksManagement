@@ -3,10 +3,13 @@ const jwt = require("jsonwebtoken")
 const { isValid, isValidTitle, isValidName, isValidMobile, isValidEmail, isValidPassword } = require('./validation')
 
 
+//===================================================Create User Api =================================================
+
+
 const registerUser = async function (req, res) {
 
     try {
-        let { title, name, phone, email, password ,address} = req.body
+        let { title, name, phone, email, password, address } = req.body
         if (Object.keys(req.body).length < 1) return res.status(400).send({
             status: false,
             message: "Insert data "
@@ -23,11 +26,11 @@ const registerUser = async function (req, res) {
         if (!isValidName(name)) {
             return res.status(400).send({ status: false, message: "enter valid name" })
         }
-        
+
         if (!isValid(phone)) {
             return res.status(400).send({ status: false, message: "phone number is required" })
         }
-        
+
         if (!isValidMobile(phone)) {
             return res.status(400).send({ status: false, message: "enter valid phone number" })
         }
@@ -53,9 +56,9 @@ const registerUser = async function (req, res) {
         if (!isValidPassword(password)) {
             return res.status(400).send({ status: false, message: "password length is between 8 to 15" })
         }
-        if(address){
-            if(!(typeof address == 'object') || !(Object.keys(address).length>0)){
-                return res.status(400).send({ status: false, message: "insert address or send in object"})
+        if (address) {
+            if (!(typeof address == 'object') || !(Object.keys(address).length > 0)) {
+                return res.status(400).send({ status: false, message: "insert address or send in object" })
             }
         }
         let createdUser = await userModel.create(req.body)
@@ -70,8 +73,8 @@ const registerUser = async function (req, res) {
     }
 
 }
-module.exports.registerUser = registerUser
 
+//===================================================Login User Api =================================================
 
 
 const loginUser = async function (req, res) {
@@ -100,7 +103,7 @@ const loginUser = async function (req, res) {
         let token = jwt.sign(
             {
                 userId: user._id.toString(),
-               
+
             },
             "book-management-project",
             { expiresIn: "24h" }
@@ -113,4 +116,6 @@ const loginUser = async function (req, res) {
 };
 
 
+
+module.exports.registerUser = registerUser
 module.exports.loginUser = loginUser

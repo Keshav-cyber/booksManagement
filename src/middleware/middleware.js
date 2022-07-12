@@ -6,69 +6,69 @@ const userModel = require("../models/userModel")
 
 
 const authenticate = function (req, res, next) {
-    try {
-        let token = req.headers["X-Api-Key"]
-        if (!token) token = req.headers["x-api-key"]
-        if (!token) return res.status(400).send({ status: false, msg: "token must be present" })
-        let decodedToken = jwt.verify(token, 'book-management-project',function(err,decodedToken) {
-           if(err) return res.status(400).send({ status: false, msg: "token is not valid or expired" })
-           req.userLogedIn = decodedToken.userId
-           next()
-        })
-        
-      } catch (err) {
-       return res.status(500).send({ status: false, Error: err.message })
-      }
-    }
-    
+  try {
+    let token = req.headers["X-Api-Key"]
+    if (!token) token = req.headers["x-api-key"]
+    if (!token) return res.status(400).send({ status: false, msg: "token must be present" })
+    let decodedToken = jwt.verify(token, 'book-management-project', function (err, decodedToken) {
+      if (err) return res.status(400).send({ status: false, msg: "token is not valid or expired" })
+      req.userLogedIn = decodedToken.userId
+      next()
+    })
+
+  } catch (err) {
+    return res.status(500).send({ status: false, Error: err.message })
+  }
+}
+
 
 
 
 
 const authorise = async function (req, res, next) {
-    try {
-         
-        let fromBodyuserId = req.body.userId
-        let userLogedIn = req.userLogedIn
-        let fromParamBookId = req.params.bookId
-     if(fromBodyuserId){ 
-          if(!mongoose.isValidObjectId(fromBodyuserId)) return res.status(400).send({
-            status: false,
-            message: "enter valid userId"
-          })
+  try {
 
-        if( fromBodyuserId != userLogedIn) return res.status(403).send({
-            status: false,
-            message: "user loggedin is not authorised to create for another user"
-          })
-          next()
-        }
+    let fromBodyuserId = req.body.userId
+    let userLogedIn = req.userLogedIn
+    let fromParamBookId = req.params.bookId
+    if (fromBodyuserId) {
+      if (!mongoose.isValidObjectId(fromBodyuserId)) return res.status(400).send({
+        status: false,
+        message: "enter valid userId"
+      })
 
-        if(fromParamBookId){
-          if(!mongoose.isValidObjectId(fromParamBookId)) return res.status(400).send({
-            status: false,
-            message: "enter valid bookId"
-          })
-            let book = await bookModel.findById({_id:fromParamBookId,isDeleted:false})
-            if(!book) return res.status(404).send({
-                status: false,
-                message: "book is not found"
-              })
-              if( book.userId!= userLogedIn) return res.status(403).send({
-                status: false,
-                message: "user loggedin is not authorised to create for another user"
-              })
-              next()
-        }
-        if( !fromBodyuserId && !fromParamBookId){
-          next()
-        }
-         
-
-    } catch (error) {
-        res.status(500).send({ msg: error.message })
+      if (fromBodyuserId != userLogedIn) return res.status(403).send({
+        status: false,
+        message: "user loggedin is not authorised to create for another user"
+      })
+      next()
     }
+
+    if (fromParamBookId) {
+      if (!mongoose.isValidObjectId(fromParamBookId)) return res.status(400).send({
+        status: false,
+        message: "enter valid bookId"
+      })
+      let book = await bookModel.findById({ _id: fromParamBookId, isDeleted: false })
+      if (!book) return res.status(404).send({
+        status: false,
+        message: "book is not found"
+      })
+      if (book.userId != userLogedIn) return res.status(403).send({
+        status: false,
+        message: "user loggedin is not authorised to create for another user"
+      })
+      next()
+    }
+    if (!fromBodyuserId && !fromParamBookId) {
+      next()
+    }
+
+
+  } catch (error) {
+    res.status(500).send({ msg: error.message })
+  }
 }
 
 
-module.exports = {authenticate, authorise}
+module.exports = { authenticate, authorise }

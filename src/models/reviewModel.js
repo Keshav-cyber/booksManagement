@@ -12,7 +12,8 @@ const reviewSchema = new mongoose.Schema({
     reviewedBy: {                   // value: reviewer's name
         type: String,
         required: true,
-        default: 'Guest'
+        default: 'Guest',
+        trim:true
     },
     reviewedAt: {
         type: Date,
@@ -20,12 +21,11 @@ const reviewSchema = new mongoose.Schema({
     },
     rating: {                               //review, rating, reviewer's name
         type: Number,
-        minlength: 1,
-        maxlength: 5,
         required: true
     },
     review: {                       // optional
-        type: String
+        type: String,
+        trim:true
     },
     isDeleted: {
         type: Boolean,
