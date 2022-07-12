@@ -45,7 +45,10 @@ const authorise = async function (req, res, next) {
         }
 
         if(fromParamBookId){
-
+          if(!mongoose.isValidObjectId(fromParamBookId)) return res.status(400).send({
+            status: false,
+            message: "enter valid bookId"
+          })
             let book = await bookModel.findById({_id:fromParamBookId,isDeleted:false})
             if(!book) return res.status(404).send({
                 status: false,

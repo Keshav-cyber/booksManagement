@@ -102,7 +102,7 @@ const getBookByParam = async function (req, res) {
         const book = await bookModel.findOne({ _id: id, isDeleted: false })
         
         if (!book) {
-            return res.status(400).send({ status: false, message: "No book with this ID exist" })
+            return res.status(404).send({ status: false, message: "No book with this ID exist" })
         }
         let reviews = await reviewModel.find({bookId:id,isDeleted:false}).select({bookId:1,reviewedBy:1,reviewedAt:1,rating:1,review:1})
 
@@ -159,6 +159,9 @@ const updateBook = async function (req, res) {
             status: false,
             message: "title is already in use , give another title"
         })
+        if(!isValidISBN(ISBN)){
+            return res.status(400).send({ status: false, message: "enter valid isbn length 10  or 13" })
+        }
         let checkIsbn = await bookModel.findOne({ ISBN: ISBN, isDeleted: false })
         if (checkIsbn) return res.status(400).send({
             status: false,
