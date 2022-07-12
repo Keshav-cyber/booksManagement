@@ -36,8 +36,6 @@ const createReview = async function(req,res){
         
         let  CreateReview = await reviewModel.create(req.body)
         let updatedBook = await bookModel.findOneAndUpdate({_id:bookId},{$inc:{reviews:1}},{new:true}) 
-        
-        // let Review = await reviewModel.findById(CreateReview._id).select({reviewedBy:1,reviewedAt:1,review:1,rating:1,bookId:1})
 
         let {createdAt,updatedAt,__v,isDeleted,...Review}  = CreateReview._doc
 
@@ -51,7 +49,7 @@ const createReview = async function(req,res){
     
 }
 
-module.exports.createReview = createReview
+
 
 const updateReview =  async function(req,res){
     try{
@@ -92,7 +90,7 @@ const updateReview =  async function(req,res){
 }
 
 
-module.exports.updateReview = updateReview
+
 
 const deleteReview = async function(req,res){
     try{
@@ -121,4 +119,6 @@ const deleteReview = async function(req,res){
     }
 }
 
+module.exports.createReview = createReview
+module.exports.updateReview = updateReview
 module.exports.deleteReview = deleteReview

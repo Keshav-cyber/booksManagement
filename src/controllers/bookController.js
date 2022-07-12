@@ -1,4 +1,4 @@
-const { default: mongoose } = require('mongoose')
+const mongoose  = require('mongoose')
 const bookModel = require('../models/bookModel')
 const reviewModel = require('../models/reviewModel')
 const userModel = require('../models/userModel')
@@ -87,7 +87,7 @@ const createBook = async function (req, res) {
     }
 }
 
-module.exports.createBook = createBook
+
 
 
 const getBookByParam = async function (req, res) {
@@ -114,7 +114,7 @@ const getBookByParam = async function (req, res) {
     }
 }
 
-module.exports.getBookByParam = getBookByParam
+
 
 
 
@@ -139,7 +139,7 @@ const getFilterdBooks = async function (req, res) {
     }
 }
 
-module.exports.getFilterdBooks = getFilterdBooks
+
 
 const updateBook = async function (req, res) {
     try {
@@ -194,7 +194,7 @@ const updateBook = async function (req, res) {
     }
 }
 
-module.exports.updateBook = updateBook
+
 
 
 const deleteBook = async function (req, res) {
@@ -217,4 +217,11 @@ const deleteBook = async function (req, res) {
     }
 }
 
+
+
+
+module.exports.createBook = createBook
+module.exports.getBookByParam = getBookByParam
+module.exports.getFilterdBooks = getFilterdBooks
+module.exports.updateBook = updateBook
 module.exports.deleteBook = deleteBook
