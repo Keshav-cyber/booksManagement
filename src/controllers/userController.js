@@ -9,11 +9,17 @@ const { isValid, isValidTitle, isValidName, isValidMobile, isValidEmail, isValid
 const registerUser = async function (req, res) {
 
     try {
+        //destructuring request body
         let { title, name, phone, email, password, address } = req.body
+
+        //checking if body is empty
         if (Object.keys(req.body).length < 1) return res.status(400).send({
             status: false,
             message: "Insert data "
         })
+
+
+        //checking for mandatory fields
         if (!isValid(title)) {
             return res.status(400).send({ status: false, message: " title is required" })
         }
@@ -31,9 +37,12 @@ const registerUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "phone number is required" })
         }
 
+        //checking if entered phone number is valid or not
         if (!isValidMobile(phone)) {
             return res.status(400).send({ status: false, message: "enter valid phone number" })
         }
+
+        //checking for uniqueness of phone and email
         let checkPhone = await userModel.findOne({ phone: phone })
         if (checkPhone) return res.status(400).send({
             status: false,
@@ -50,17 +59,26 @@ const registerUser = async function (req, res) {
             status: false,
             message: "email is already exists"
         })
+
+        //checking if password is available
         if (!isValid(password)) {
             return res.status(400).send({ status: false, message: "password is required" })
         }
+
+        //checking for valid password length
         if (!isValidPassword(password)) {
             return res.status(400).send({ status: false, message: "password length is between 8 to 15" })
         }
+
+        //checking for valid address type
         if (address) {
             if (!(typeof address == 'object') || !(Object.keys(address).length > 0)) {
                 return res.status(400).send({ status: false, message: "insert address or send in object" })
             }
         }
+
+
+        //creating and returning created user
         let createdUser = await userModel.create(req.body)
 
         res.status(201).send({
@@ -79,20 +97,38 @@ const registerUser = async function (req, res) {
 
 const loginUser = async function (req, res) {
     try {
+
+        //checking for empty body
         if (Object.keys(req.body).length < 1) return res.status(400).send({
             status: false,
             message: "Insert data "
         })
+
+        //checking for email and password
         let email = req.body.email
         if (!email) return res.status(400).send({
             status: false,
             message: "enter email"
         })
+
+        //checking for valid email
+        if (!isValidEmail(email)) {
+            return res.status(400).send({ status: false, message: "enter valid email" })
+        }
+
+
         let password = req.body.password
         if (!password) return res.status(400).send({
             status: false,
             message: "enter password"
         })
+
+        //checking for valid password
+        if (!isValidPassword(password)) {
+            return res.status(400).send({ status: false, message: "password length is between 8 to 15" })
+        }
+
+        //finding user 
         let user = await userModel.findOne({ email: email, password: password })
         if (!user) {
             return res.status(401).send({
@@ -100,6 +136,8 @@ const loginUser = async function (req, res) {
                 message: "Enter valid email and password"
             })
         }
+
+        //generating token on successful login
         let token = jwt.sign(
             {
                 userId: user._id.toString(),
@@ -116,6 +154,6 @@ const loginUser = async function (req, res) {
 };
 
 
-
+//exporting functions
 module.exports.registerUser = registerUser
 module.exports.loginUser = loginUser
