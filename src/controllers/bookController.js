@@ -2,15 +2,51 @@ const mongoose = require('mongoose')
 const bookModel = require('../models/bookModel')
 const reviewModel = require('../models/reviewModel')
 const userModel = require('../models/userModel')
-
+const aws = require('aws-sdk')
 const { isValid, isValidDate, isValidName, isValidISBN, isValidTitleName } = require('./validation')
 
 //===================================================Create Book Api =================================================
+
+aws.config.update({
+    accessKeyId: "AKIAY3L35MCRVFM24Q7U",
+    secretAccessKey: "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",
+    region: "ap-south-1"
+})
+
+let uploadFile= async ( file) =>{
+   return new Promise( function(resolve, reject) {
+    // this function will upload file to aws and return the link
+    let s3= new aws.S3({apiVersion: '2006-03-01'}); // we will be using the s3 service of aws
+
+    var uploadParams= {
+        ACL: "public-read",
+        Bucket: "classroom-training-bucket",  //HERE
+        Key: "abc/" + file.originalname, //HERE 
+        Body: file.buffer
+    }
+
+
+    s3.upload( uploadParams, function (err, data ){
+        if(err) {
+            return reject({"error": err})
+        }
+        
+        return resolve(data.Location)
+    })
+
+    // let data= await s3.upload( uploadParams)
+    // if( data) return data.Location
+    // else return "there is an error"
+
+   })
+}
+
 
 const createBook = async function (req, res) {
     try {
 
         //destructuring request body
+        
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = req.body
         if (Object.keys(req.body).length < 1) return res.status(400).send({
             status: false,
@@ -85,14 +121,14 @@ const createBook = async function (req, res) {
         }
 
         //checking if subcategory is a non empty Object
-        if (typeof (subcategory) != 'object' || subcategory.length < 1) {
-            return res.status(400).send({ status: false, message: "SubCategory is required" })
-        }
+        // if (typeof (subcategory) != 'object' || subcategory.length < 1) {
+        //     return res.status(400).send({ status: false, message: "SubCategory is required" })
+        // }
 
         //validating each element of subcategory
-        for (let item of subcategory) {
-            if (!isValid(item)) { return res.status(400).send({ msg: "not valid SubCategory items" }) }
-        }
+        // for (let item of subcategory) {
+        //     if (!isValid(item)) { return res.status(400).send({ msg: "not valid SubCategory items" }) }
+        // }
 
         //checking if released date is present and available in valid format
         if (!isValid(releasedAt)) {
@@ -100,6 +136,13 @@ const createBook = async function (req, res) {
         }
         if (!isValidDate(releasedAt)) {
             return res.status(400).send({ status: false, message: "Date is note valid format(YYYY-MM-DD)" })
+        }
+        let files= req.files
+        if(files && files.length>0){
+            //upload to s3 and get the uploaded link
+            // res.send the link back to frontend/postman
+            let uploadedFileURL= await uploadFile( files[0])
+            req.body.bookCover = uploadedFileURL
         }
 
         //creating and returning created book
@@ -158,7 +201,7 @@ const getFilterdBooks = async function (req, res) {
     try {
 
         //finding book
-        let allBooks = await bookModel.find({ $and: [req.query, { isDeleted: false }] }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1 }).sort({ title: 1 })  // add review
+        let allBooks = await bookModel.find({ $and: [req.query, { isDeleted: false }] }).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1,reviews:1 }).sort({ title: 1})  // add review
 
         //When no book is found
         if (allBooks.length < 1) return res.status(404).send({

@@ -17,8 +17,6 @@ const registerUser = async function (req, res) {
             status: false,
             message: "Insert data "
         })
-
-
         //checking for mandatory fields
         if (!isValid(title)) {
             return res.status(400).send({ status: false, message: " title is required" })
@@ -111,23 +109,11 @@ const loginUser = async function (req, res) {
             message: "enter email"
         })
 
-        //checking for valid email
-        if (!isValidEmail(email)) {
-            return res.status(400).send({ status: false, message: "enter valid email" })
-        }
-
-
         let password = req.body.password
         if (!password) return res.status(400).send({
             status: false,
             message: "enter password"
         })
-
-        //checking for valid password
-        if (!isValidPassword(password)) {
-            return res.status(400).send({ status: false, message: "password length is between 8 to 15" })
-        }
-
         //finding user 
         let user = await userModel.findOne({ email: email, password: password })
         if (!user) {

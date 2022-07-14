@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const aws = require('aws-sdk')
 const userController = require('../controllers/userController')
 const bookController = require('../controllers/bookController')
 const reviewController = require('../controllers/reviewController')
@@ -9,7 +10,7 @@ router.post("/register", userController.registerUser)    //H
 router.post("/login",userController.loginUser)          //H
 
 
-router.post("/books",authenticate,authorise,bookController.createBook)        //H
+router.post("/books",bookController.createBook)        //H    //authenticate,authorise,
 router.get("/books",authenticate,bookController.getFilterdBooks)  //K
 router.get("/books/:bookId",authenticate,bookController.getBookByParam)  //K
 router.put("/books/:bookId",authenticate,authorise,bookController.updateBook)  //K
@@ -18,6 +19,8 @@ router.delete("/books/:bookId",authenticate,authorise,bookController.deleteBook)
 router.post("/books/:bookId/review",reviewController.createReview)
 router.put("/books/:bookId/review/:reviewId",reviewController.updateReview)
 router.delete("/books/:bookId/review/:reviewId",reviewController.deleteReview)
+
+
 
 
 
